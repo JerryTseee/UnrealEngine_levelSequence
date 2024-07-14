@@ -17,6 +17,7 @@ new_actor = editor_subsystem.spawn_actor_from_class(actor_class, coordinate)
 
 path = "F:\\Jerry\\Vasilisa" #folder that contain all the character folders
 
+#for every character folder, start to do the work:
 for i in os.listdir(path):
     set_path = os.path.join(path, i) #the path of each specific character folder
     if os.path.isdir(set_path):
@@ -61,6 +62,34 @@ for i in os.listdir(path):
 		    # Set section range to level sequence start and end frame
             transform_section.set_range(start_frame, end_frame)
             anim_section.set_range(start_frame, end_frame)
+
+
+
+            #add face animation track
+            components = new_actor.get_components_by_class(unreal.SkeletalMeshComponent)
+            print("Components of Cooper: ")
+            print(components)
+
+            face_component = None
+            for component in components:
+                if component.get_name() == "Face":
+                    face_component = component
+                    break
+            print(face_component)
+
+            #get the face track:
+            face_binding = level_sequence.add_possessable(face_component)
+            print(face_binding)
+            transform_track2 = face_binding.add_track(unreal.MovieScene3DTransformTrack)
+            anim_track2 = face_binding.add_track(unreal.MovieSceneSkeletalAnimationTrack)
+            transform_section2 = transform_track2.add_section()
+            anim_section2 = anim_track2.add_section()
+            transform_section2.set_range(start_frame, end_frame)
+            anim_section2.set_range(start_frame, end_frame)
+            
+
+
+
 
 		    # Refresh to visually see the new tracks and sections added
             unreal.LevelSequenceEditorBlueprintLibrary.refresh_current_level_sequence()
