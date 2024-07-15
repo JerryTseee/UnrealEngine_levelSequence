@@ -15,6 +15,13 @@ new_actor = editor_subsystem.spawn_actor_from_class(actor_class, coordinate)
 
 
 
+animation_sequence = dict()
+#assume the dataset is only 50 folders !!! (important, need to be changed base on real dataset number)
+for i in range(2,50):
+    animation_sequence[i] = False
+
+
+
 path = "F:\\Jerry\\Vasilisa" #folder that contain all the character folders
 
 #for every character folder, start to do the work:
@@ -45,6 +52,26 @@ for i in os.listdir(path):
 
 
 
+            #start to load into the animation to the current face track:
+            #assuming that the name of the animation sequence is "AS_va + number"
+            face_anim_path = "/Game/MetaHumans/AS_va"
+            #then from low to high to load the animation sequence into the current face track (if the sequenced is loaded before, it will not be loaded again, then go the next)
+            for i in range(2,50):
+                final_face_anim_path = face_anim_path + str(i)
+                if final_face_anim_path:#if the path exists
+                    if animation_sequence[i] == False:#if the animation sequence is not used before
+                        animation_sequence[i] = True
+                        anim_asset = unreal.EditorAssetLibrary.load_asset(final_face_anim_path)
+                        print("animation sequence:")
+                        print(anim_asset)
+                        break
+                else:
+                    continue
+            anim_asset = unreal.AnimSequence.cast(anim_asset)
+            params = unreal.MovieSceneSkeletalAnimationParams()
+            params.set_editor_property("Animation", anim_asset)
+
+
             #add the actor into the level sequence
             actor_binding = level_sequence.add_possessable(new_actor)
 
@@ -65,6 +92,8 @@ for i in os.listdir(path):
 
 
 
+
+        
             #add face animation track
             components = new_actor.get_components_by_class(unreal.SkeletalMeshComponent)
             print("Components of Cooper: ")
@@ -77,17 +106,17 @@ for i in os.listdir(path):
                     break
             print(face_component)
 
-            #get the face track:
+            #get the face track (same technique as above):
             face_binding = level_sequence.add_possessable(face_component)
             print(face_binding)
             transform_track2 = face_binding.add_track(unreal.MovieScene3DTransformTrack)
             anim_track2 = face_binding.add_track(unreal.MovieSceneSkeletalAnimationTrack)
             transform_section2 = transform_track2.add_section()
             anim_section2 = anim_track2.add_section()
+            anim_section2.set_editor_property("Params", params)#add animation
             transform_section2.set_range(start_frame, end_frame)
             anim_section2.set_range(start_frame, end_frame)
             
-
 
 
 
