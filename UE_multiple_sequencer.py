@@ -28,7 +28,7 @@ def get_sequencer_objects(level_sequence):
 
 
 # function to export the face animation keys to a json file
-def mgMetaHuman_face_keys_export(level_sequence):
+def mgMetaHuman_face_keys_export(level_sequence, output_path):
 	system_lib = unreal.SystemLibrary()
 	root = tk.Tk()
 	root.withdraw()
@@ -90,10 +90,17 @@ def mgMetaHuman_face_keys_export(level_sequence):
 
 			character_name = character_name.lower()
 			print('character_name is ' + character_name)
-			keys_file = filedialog.asksaveasfile(initialfile = str(editor_asset_name) + '_' + character_name + '_face_anim' + '.json', defaultextension=".json",filetypes=[("All Files","*.*"),("JSON file","*.json")])
-
-			keys_file.write('anim_keys_dict = ')
-			keys_file.write(json.dumps(face_anim))
+            
+			
+			folder_path = output_path
+			os.makedirs(folder_path, exist_ok=True)
+			file_path = os.path.join(folder_path, f'{editor_asset_name}_{character_name}_face_anim.json')
+			with open(file_path, 'w') as keys_file:
+				keys_file.write('anim_keys_dict = ')
+				keys_file.write(json.dumps(face_anim))
+				
+			
+			
 			print('Face Animation Keys output to: ' + str(keys_file.name))
 		else:
 			print(editor_asset_name)
@@ -122,7 +129,7 @@ for i in range(2,50):
 
 
 
-path = "F:\\Jerry\\Vasilisa" #folder that contain all the character folders, need to be changed base on the real path
+path = "F:\\Jerry\\Pipeline\\Vasilisa" #folder that contain all the character folders, need to be changed base on the real path
 
 #for every character folder, start to do the work:
 for i in os.listdir(path):
@@ -236,7 +243,8 @@ for i in os.listdir(path):
             unreal.LevelSequenceEditorBlueprintLibrary.refresh_current_level_sequence()
 			
             # Export the current face animation keys to a json file
-            mgMetaHuman_face_keys_export(level_sequence)
+            output_path = "F:\\Jerry\\Pipeline\\output_sequence"
+            mgMetaHuman_face_keys_export(level_sequence, output_path)
             unreal.LevelSequenceEditorBlueprintLibrary.refresh_current_level_sequence()
 
 print("Well Done! Jerry!")
