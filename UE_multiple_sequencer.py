@@ -123,7 +123,7 @@ new_actor = editor_subsystem.spawn_actor_from_class(actor_class, coordinate)
 
 
 animation_sequence = dict()
-#assume the dataset is only 50 folders !!! Important, need to be changed base on real dataset number
+#assume the dataset is only 50 folders !!! Important, need to be changed base on real dataset number!! And number order should be 1, 2, 3, 4, ... ...
 for i in range(2,50):
     animation_sequence[i] = False
 
@@ -162,7 +162,7 @@ for i in os.listdir(path):
             #assuming that the name of the animation sequence is "AS_va + number" ! Need to be changed base on the real name
             face_anim_path = "/Game/MetaHumans/AS_va"
             #then from low to high to load the animation sequence into the current face track (if the sequenced is loaded before, it will not be loaded again, then go the next)
-            for i in range(2,50):
+            for i in range(2,50):#And number order of the animation file should be 1, 2, 3, 4, ... ...
                 final_face_anim_path = face_anim_path + str(i)
                 if final_face_anim_path:#if the path exists
                     if animation_sequence[i] == False:#if the animation sequence is not used before
